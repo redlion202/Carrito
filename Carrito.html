@@ -4,12 +4,50 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Carrito de Compras</title>
-  <link rel="stylesheet" href="estilo.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+
+    .product-list {
+      display: flex;
+      gap: 20px;
+    }
+
+    .product {
+      border: 1px solid #ccc;
+      padding: 10px;
+      border-radius: 5px;
+      width: 150px;
+    }
+
+    .add-to-cart {
+      background-color: #28a745;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    .cart {
+      margin-top: 20px;
+    }
+
+    .cart-items {
+      list-style: none;
+      padding: 0;
+    }
+
+    .cart-items li {
+      margin-bottom: 10px;
+    }
+  </style>
 </head>
 <body>
   <h1>Carrito de Compras</h1>
   <div class="product-list">
-    <!-- Productos disponibles -->
     <div class="product">
       <h2>Producto 1</h2>
       <p>Precio: $10</p>
@@ -22,13 +60,48 @@
     </div>
   </div>
 
-  <!-- Carrito -->
   <div class="cart">
     <h2>Tu Carrito</h2>
     <ul class="cart-items"></ul>
     <p>Total: $<span class="cart-total">0</span></p>
   </div>
 
-  <script src="script.js"></script>
+  <script>
+    const addToCartButtons = document.querySelectorAll('.add-to-cart');
+    const cartItems = document.querySelector('.cart-items');
+    const cartTotal = document.querySelector('.cart-total');
+
+    let cart = [];
+
+    function updateCart() {
+      cartItems.innerHTML = '';
+      cart.forEach((item, index) => {
+        const li = document.createElement('li');
+        li.textContent = `${item.name} - $${item.price}`;
+        const removeButton = document.createElement('button');
+        removeButton.textContent = 'Eliminar';
+        removeButton.onclick = () => removeFromCart(index);
+        li.appendChild(removeButton);
+        cartItems.appendChild(li);
+      });
+      const total = cart.reduce((sum, item) => sum + item.price, 0);
+      cartTotal.textContent = total.toFixed(2);
+    }
+
+    function addToCart(event) {
+      const button = event.target;
+      const name = button.dataset.name;
+      const price = parseFloat(button.dataset.price);
+      cart.push({ name, price });
+      updateCart();
+    }
+
+    function removeFromCart(index) {
+      cart.splice(index, 1);
+      updateCart();
+    }
+
+    addToCartButtons.forEach(button => button.addEventListener('click', addToCart));
+  </script>
 </body>
 </html>
